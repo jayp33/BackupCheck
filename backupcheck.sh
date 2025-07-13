@@ -15,6 +15,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Prüfen, ob das gewünschte Gerät verbunden ist
+CONNECTED_SERIAL=$(adb get-serialno 2>/dev/null)
+if [ "$CONNECTED_SERIAL" != "$ANDROID_SERIAL" ]; then
+    echo "Das gewünschte Gerät ($ANDROID_SERIAL) ist nicht verbunden. Verbunden: $CONNECTED_SERIAL"
+    exit 1
+fi
+
 # Prüfen, ob Ordner auf dem Android-Gerät existiert
 adb shell "[ -d \"$ANDROID_FOLDER\" ]"
 if [ $? -ne 0 ]; then
