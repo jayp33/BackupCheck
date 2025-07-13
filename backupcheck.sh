@@ -37,11 +37,11 @@ if [ ! -d "$LOCAL_FOLDER" ]; then
     exit 1
 fi
 
-# Dateiliste vom Android-Gerät holen
-adb shell "ls -1 $ANDROID_FOLDER" > android_files.txt
+# Dateiliste vom Android-Gerät holen (rekursiv, relative Pfade)
+adb shell "cd \"$ANDROID_FOLDER\" && find . -type f | sed 's|^\./||'" > android_files.txt
 
-# Dateiliste vom lokalen Backup holen
-ls -1 "$LOCAL_FOLDER" > local_files.txt
+# Dateiliste vom lokalen Backup holen (rekursiv, relative Pfade)
+find "$LOCAL_FOLDER" -type f | sed "s|^$LOCAL_FOLDER/||" > local_files.txt
 
 # Sortieren der Dateilisten
 sort android_files.txt -o android_files.txt
