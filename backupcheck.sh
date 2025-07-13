@@ -41,6 +41,10 @@ adb shell "ls -1 $ANDROID_FOLDER" > android_files.txt
 # Dateiliste vom lokalen Backup holen
 ls -1 "$LOCAL_FOLDER" > local_files.txt
 
+# Sortieren der Dateilisten
+sort android_files.txt -o android_files.txt
+sort local_files.txt -o local_files.txt
+
 # Vergleich der Listen
 echo "Dateien nur auf dem Android-Gerät:"
 comm -23 android_files.txt local_files.txt
