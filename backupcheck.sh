@@ -2,7 +2,7 @@
 
 VERBOSE=0
 
-# Konfiguration laden
+# Haupt-Konfiguration laden (enthält nur ANDROID_SERIAL)
 CONFIG_FILE="$(dirname "$0")/backupcheck.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "Konfigurationsdatei $CONFIG_FILE nicht gefunden."
@@ -10,18 +10,25 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 source "$CONFIG_FILE"
 
+# Geräte-Konfiguration wählen
+DEVICE_CONFIG="$(dirname "$0")/device_${ANDROID_SERIAL}.conf"
+if [ ! -f "$DEVICE_CONFIG" ]; then
+    echo "Gerätespezifische Konfigurationsdatei $DEVICE_CONFIG nicht gefunden."
+    exit 1
+fi
+
 # Parameter prüfen
 if [[ "$1" == "-v" || "$1" == "--verbose" ]]; then
     VERBOSE=1
 fi
 
-# Ordner-Kombinationen aus Konfiguration einlesen
+# Ordner-Kombinationen aus Geräte-Konfiguration einlesen
 ANDROID_FOLDERS=()
 LOCAL_FOLDERS=()
 while IFS= read -r line; do
     [[ "$line" =~ ^ANDROID_FOLDER\[([0-9]+)\]= ]] && ANDROID_FOLDERS[${BASH_REMATCH[1]}]="${line#*=}"
     [[ "$line" =~ ^LOCAL_FOLDER\[([0-9]+)\]= ]] && LOCAL_FOLDERS[${BASH_REMATCH[1]}]="${line#*=}"
-done < "$CONFIG_FILE"
+done < "$DEVICE_CONFIG"
 
 for idx in "${!LOCAL_FOLDERS[@]}"; do
     # Expandiert Umgebungsvariablen wie $HOME
