@@ -81,15 +81,17 @@ for idx in "${!ANDROID_FOLDERS[@]}"; do
     DIFF_ANDROID=$(comm -23 android_files.txt local_files.txt)
     DIFF_LOCAL=$(comm -13 android_files.txt local_files.txt)
 
+    echo "Vergleich: $ANDROID_FOLDER <-> $LOCAL_FOLDER"
     if [ "$VERBOSE" -eq 1 ]; then
         if [ -n "$DIFF_ANDROID" ] || [ -n "$DIFF_LOCAL" ]; then
-            echo "Vergleich: $ANDROID_FOLDER <-> $LOCAL_FOLDER"
             echo "Dateien nur auf dem Android-Gerät:"
             echo "$DIFF_ANDROID"
             echo ""
             echo "Dateien nur im lokalen Backup:"
             echo "$DIFF_LOCAL"
             DIFF_FOUND=1
+        else
+            echo "Keine Unterschiede gefunden."
         fi
     else
         if [ -n "$DIFF_ANDROID" ] || [ -n "$DIFF_LOCAL" ]; then
