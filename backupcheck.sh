@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VERBOSE=0
+
 # Konfiguration laden
 CONFIG_FILE="$(dirname "$0")/backupcheck.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
@@ -46,12 +48,27 @@ sort android_files.txt -o android_files.txt
 sort local_files.txt -o local_files.txt
 
 # Vergleich der Listen
-echo "Dateien nur auf dem Android-Gerät:"
-comm -23 android_files.txt local_files.txt
+DIFF_ANDROID=$(comm -23 android_files.txt local_files.txt)
+DIFF_LOCAL=$(comm -13 android_files.txt local_files.txt)
 
-echo ""
-echo "Dateien nur im lokalen Backup:"
-comm -13 android_files.txt local_files.txt
+# Parameter prüfen
+if [[ "$1" == "-v" || "$1" == "--verbose" ]]; then
+    VERBOSE=1
+fi
+
+if [ "$VERBOSE" -eq 1 ]; then
+    echo "Dateien nur auf dem Android-Gerät:"
+    echo "$DIFF_ANDROID"
+    echo ""
+    echo "Dateien nur im lokalen Backup:"
+    echo "$DIFF_LOCAL"
+else
+    if [ -n "$DIFF_ANDROID" ] || [ -n "$DIFF_LOCAL" ]; then
+        echo "Es gibt Unterschiede zwischen Android-Gerät und lokalem Backup."
+    else
+        echo "Keine Unterschiede gefunden."
+    fi
+fi
 
 # Aufräumen
 rm android_files.txt local_files.txt
