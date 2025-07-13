@@ -23,6 +23,11 @@ while IFS= read -r line; do
     [[ "$line" =~ ^LOCAL_FOLDER\[([0-9]+)\]= ]] && LOCAL_FOLDERS[${BASH_REMATCH[1]}]="${line#*=}"
 done < "$CONFIG_FILE"
 
+for idx in "${!LOCAL_FOLDERS[@]}"; do
+    # Expandiert Umgebungsvariablen wie $HOME
+    LOCAL_FOLDERS[$idx]=$(eval echo "${LOCAL_FOLDERS[$idx]}")
+done
+
 # Prüfen, ob Gerät verbunden ist
 adb get-state 2>/dev/null | grep -q "device"
 if [ $? -ne 0 ]; then
