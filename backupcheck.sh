@@ -57,11 +57,15 @@ if [[ "$1" == "-v" || "$1" == "--verbose" ]]; then
 fi
 
 if [ "$VERBOSE" -eq 1 ]; then
-    echo "Dateien nur auf dem Android-Gerät:"
-    echo "$DIFF_ANDROID"
-    echo ""
-    echo "Dateien nur im lokalen Backup:"
-    echo "$DIFF_LOCAL"
+    if [ -n "$DIFF_ANDROID" ] || [ -n "$DIFF_LOCAL" ]; then
+        echo "Dateien nur auf dem Android-Gerät:"
+        echo "$DIFF_ANDROID"
+        echo ""
+        echo "Dateien nur im lokalen Backup:"
+        echo "$DIFF_LOCAL"
+    else
+        echo "Keine Unterschiede gefunden."
+    fi
 else
     if [ -n "$DIFF_ANDROID" ] || [ -n "$DIFF_LOCAL" ]; then
         echo "Es gibt Unterschiede zwischen Android-Gerät und lokalem Backup."
