@@ -15,6 +15,19 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Prüfen, ob Ordner auf dem Android-Gerät existiert
+adb shell "[ -d \"$ANDROID_FOLDER\" ]"
+if [ $? -ne 0 ]; then
+    echo "Ordner $ANDROID_FOLDER auf dem Android-Gerät nicht gefunden."
+    exit 1
+fi
+
+# Prüfen, ob lokaler Ordner existiert
+if [ ! -d "$LOCAL_FOLDER" ]; then
+    echo "Lokaler Ordner $LOCAL_FOLDER nicht gefunden."
+    exit 1
+fi
+
 # Dateiliste vom Android-Gerät holen
 adb shell "ls -1 $ANDROID_FOLDER" > android_files.txt
 
