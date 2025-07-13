@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# Android-Ordner (z.B. DCIM)
-ANDROID_FOLDER="/sdcard/DCIM"
-# Lokaler Backup-Ordner
-LOCAL_FOLDER="$HOME/Backup/DCIM"
+# Konfiguration laden
+CONFIG_FILE="$(dirname "$0")/backupcheck.conf"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Konfigurationsdatei $CONFIG_FILE nicht gefunden."
+    exit 1
+fi
+source "$CONFIG_FILE"
 
 # Prüfen, ob Gerät verbunden ist
 adb get-state 2>/dev/null | grep -q "device"
